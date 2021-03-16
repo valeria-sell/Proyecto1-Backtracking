@@ -13,18 +13,15 @@ def solucion():
     return sol
 
 def restricciones(cantidad):
-    rest = ['','']
     restr = ['']*cantidad
-    for i in range(cantidad):
+    i=0
+    while (i<cantidad):
         cero,uno = random.randint(0,len(grupo)-1), random.randint(0,len(grupo)-1)
-        print(cero,uno)
         if cero != uno:
             dos = grupo[cero][random.randint(0,len(grupo[cero])-1)]
             tres = grupo[uno][random.randint(0,len(grupo[uno])-1)]
-            rest[0] = dos
-            rest[1] = tres
-            
-            restr[i] = rest
+            restr[i] = [dos,tres]
+            i+=1
         else:
             i-=1
     return restr
