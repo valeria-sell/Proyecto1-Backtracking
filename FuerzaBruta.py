@@ -26,5 +26,29 @@ def restricciones(cantidad):
             i-=1
     return restr
 
-print(solucion())
-print(restricciones(3))
+def validacion(solucion, restricciones):
+    for i in restricciones:
+        mismas_cartas = set(solucion) & set(i)
+        if(len(mismas_cartas)>1):
+            return False
+    return True
+
+def fuerzaBruta(solucion):
+    respuesta = ['']*5
+    for i in sospechoso:
+        respuesta[0] = i
+        for j in arma:
+            respuesta[1] = j
+            for k in motivo:
+                respuesta[2] = k
+                for l in parteCuerpo:
+                    respuesta[3] = l
+                    for m in lugar:
+                        respuesta[4] = m
+                        if(respuesta == solucion):
+                            return respuesta
+
+sol = solucion()
+print(sol)
+#print(restricciones(3))
+print(fuerzaBruta(sol))
