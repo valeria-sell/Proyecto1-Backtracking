@@ -1,9 +1,11 @@
 import random
-from algoritmos import genera_solucion, genera_restricciones, fuerzaBruta
+from algoritmos import *
 
-solucion = genera_solucion()
-restricciones = genera_restricciones(3)  
+SOLUCION = genera_solucion()
+RESTRICCIONES = genera_restricciones(5)
 
-print(solucion)
-print(restricciones)
-print(fuerzaBruta(solucion))
+print(SOLUCION) 
+print(RESTRICCIONES)
+
+print(fuerzaBruta(SOLUCION))
+solve()
