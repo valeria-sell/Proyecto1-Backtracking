@@ -10,9 +10,8 @@ COUNT = 0
 TIP0 = 0
 CARTA = 0
 TEMPORAL = 0
-NIVEL = 0
 
-#-------------------------------Algoritmos de la Solucion--------------
+#-------------------------------Algoritmos para la Solucion--------------
 def genera_solucion():
     solucion = [sospechoso[random.randint(0,len(sospechoso)-1)], arma[random.randint(0,len(arma)-1)], motivo[random.randint(0,len(motivo)-1)], parteCuerpo[random.randint(0,len(parteCuerpo)-1)], lugar[random.randint(0,len(lugar)-1)]]
     return solucion
@@ -30,6 +29,12 @@ def genera_restricciones(cantidad):
         else:
             i-=1
     return restr
+
+SOLUCION = genera_solucion()
+RESTRICCIONES = genera_restricciones(40)
+
+print(SOLUCION) 
+print(RESTRICCIONES)
 
 #-------------------------------Algoritmo Fuerza Bruta--------------
 
@@ -60,42 +65,68 @@ def fuerzaBruta(solucion):
 
 def is_valid(item):
     #revisa las restricciones
-    #retorna true si es valido, false si no lo es
-    if (item in chain(*RESTRICCIONES)):
-        #si está esto retorna true
-        #hace el brete de iteracion
-        for i in RESTRICCIONES:
-            if item in RESTRICCIONES[i]:
+    try:
+        #retorna true si es valido, false si no lo es
+        for i in range(0, len(RESTRICCIONES)):
+            if (item in RESTRICCIONES[i]):
                 if (RESTRICCIONES.index(item)==0):
                     if (RESTRICCIONES[1] in SOL_BACKTRACKING):
+                        print("RESTRICCION ENCONTRADA")
                         return False
                 elif (RESTRICCIONES.index(item)==1):
                     if (RESTRICCIONES[0] in SOL_BACKTRACKING):
+                        print("RESTRICCION ENCONTRADA")
                         return False
-    else:
+    except:
         return True
+    return True
 
-def check_sol():
-    global SOL_BACKTRACKING, TIP0, CARTA, COUNT, TEMPORAL, NIVEL
-    if (SOL_BACKTRACKING == SOLUCION):
+def index_jump(item_in_sol):
+    global CARTA, TIP0, SOL_BACKTRACKING
+    #se encarga de poner el indice en la siguiente opción correcta para el backtracking 
+    #revisa del final hacia adelante, los itemes de SOL_BACKTRACKING
+    #al entrar sabemos que el item de SOL_BACKTRACKING[4] es el ultimo item de grupo[lugar]
+    #va a revisar un total de 4 veces maximo. 
+    item_in_sol -= 1
+    if (is_end(item_in_sol)):
+        index_jump(item_in_sol)
+    else:
+        #se usa item para encontrar el indice de la carta del tipo a avanzar
+        item = SOL_BACKTRACKING[item_in_sol]
+        CARTA = (grupo[item_in_sol].index(item) + 1)
+        TIP0 = item_in_sol
+        del SOL_BACKTRACKING[item_in_sol:]
+
+def is_end(index_check):
+    check_len = len(grupo[index_check]) - 1
+    item = SOL_BACKTRACKING[index_check]
+    item_index = grupo[index_check].index(item)
+    if (item_index == check_len):
         return True
     else:
-        TIP0 -= 1
-        if (TEMPORAL < (len(grupo[TIP0])-1)):
+        return False
+
+def check_sol(long_solback):
+    global TEMPORAL, CARTA, TIP0, SOL_BACKTRACKING
+    #@param item_in_sol es nuestra posición en el conjunto solución, para comparar con las listas de datos
+    item_in_sol = long_solback-1
+    if (SOL_BACKTRACKING == SOLUCION):
+        return True  
+    else:
+        #revisa si TEMPORAL está al final de la lista
+        if (is_end(item_in_sol)): 
+            #está al final de la lista, requiere salto de indice
+            #procede a revisar las listas previas para así revisar cual requiere salto de indice
+            index_jump(item_in_sol)
+            solve()
+        else:
+            #no está al final de la lista, solo necesita avanzar al siguiente item
             TEMPORAL += 1
             CARTA = TEMPORAL
-            del SOL_BACKTRACKING[4-(COUNT-NIVEL):5]
-        else:
-            COUNT += 1         
-            TIP0 -= COUNT
-            #se usa item para encontrar el indice de la carta que entró a SOL_BACKTRACKING en ese tipo
-            item = SOL_BACKTRACKING[TIP0]
-            CARTA = SOL_BACKTRACKING[TIP0].index(item) + 1
-            NIVEL += 1
-            del SOL_BACKTRACKING[4-COUNT:5]
-        print (TIP0, CARTA)
-        
-        solve()
+            TIP0 -=1 
+            #borra el ultimo item de SOL_BACKTRACKING
+            del SOL_BACKTRACKING[4:]
+            solve()
 
 def solve():
     #los datos son una lista de listas
@@ -115,6 +146,4 @@ def solve():
         else:
             CARTA += 1
     print (SOL_BACKTRACKING)
-    check_sol()
-    
-        
+    check_sol(len(SOL_BACKTRACKING))

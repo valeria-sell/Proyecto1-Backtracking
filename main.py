@@ -1,11 +1,7 @@
-import random
 from algoritmos import *
-
-SOLUCION = genera_solucion()
-RESTRICCIONES = genera_restricciones(5)
-
-print(SOLUCION) 
-print(RESTRICCIONES)
+import random
+import sys
+sys.setrecursionlimit(6410)
 
 print(fuerzaBruta(SOLUCION))
 solve()
